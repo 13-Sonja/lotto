@@ -8,13 +8,13 @@ MAX_TICKETS = 14
 COST_PER_TICKET = 1.20
 WINNINGS = {
     "6+1": 9000000,
-    "6": 575000,
+    "6+0": 575000,
     "5+1": 10000,
-    "5": 3300,
+    "5+0": 3300,
     "4+1": 190,
-    "4": 43,
+    "4+0": 43,
     "3+1": 21,
-    "3": 11,
+    "3+0": 11,
     "2+1": 5,
 }
 
@@ -28,18 +28,16 @@ def play_lotto():
     while True:
         my_tickets_amount = input_validation(
             input(
-                "Willkommen zum Spiel 6 aus 49! Wie viele Lose (zwischen 1-14) wollen Sie kaufen: "
+                f"Willkommen zum Spiel 6 aus 49! Wie viele Lose (zwischen 1-{MAX_TICKETS}) wollen Sie kaufen: "
             ),
             MAX_TICKETS,
         )
-        if not my_tickets_amount:
-            continue
-        else:
+        if my_tickets_amount:
             break
     while True:
         drawings_to_play = input_validation(
             input(
-                "An wie vielen Ziehungen (max 104 für ein Jahr) wollen Sie teilnehmen? "
+                f"An wie vielen Ziehungen (max {DRAWINGS_PER_YEAR} für ein Jahr) wollen Sie teilnehmen? "
             ),
             DRAWINGS_PER_YEAR,
         )
@@ -51,7 +49,8 @@ def play_lotto():
         drawing(NORMAL_NUMBERS, SUPERNUMBER) for ticket in range(my_tickets_amount)
     ]
     for i in range(drawings_to_play):
-        won = calculate_winnings(my_tickets)
+        winning_nums = drawing(NORMAL_NUMBERS, SUPERNUMBER)
+        won = calculate_winnings(my_tickets, winning_nums)
         total_winnings += won
         print(
             f"Ziehung {i + 1}, Kosten: {round(my_tickets_amount * COST_PER_TICKET, 2)} €, Gewinn: {won}€"
@@ -69,9 +68,9 @@ def drawing(NORMAL_NUMBERS, SUPERNUMBER):
 
 
 # calculate players winnings per drawing
-def calculate_winnings(my_tickets):
+def calculate_winnings(my_tickets, winning_nums):
     won = 0
-    normal_nums, supernum = drawing(NORMAL_NUMBERS, SUPERNUMBER)
+    normal_nums, supernum = winning_nums
     for ticket in my_tickets:
         a = 0
         for drawn_num, my_num in zip(normal_nums, ticket[0]):

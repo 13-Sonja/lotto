@@ -10,21 +10,10 @@ WINNINGS = {"class_1": 1000000, "class_2": 100000, "class_3": 1000, "class_4": 1
 def play_silvester():
     shuffle(TICKETS)
     while True:
-        my_tickets_amount = input(
-            "Wieviele Lose für die Silvestermillionen wollen Sie kaufen: "
+        my_tickets_amount = input_validation(
+            input("Wieviele Lose für die Silvestermillionen wollen Sie kaufen: ")
         )
-        if not my_tickets_amount.isdigit():
-            print(
-                f"Ungültige Eingabe. Bitte eine Zahl zwischen 1 und {max(TICKETS)} eingeben."
-            )
-        elif min(TICKETS) > int(my_tickets_amount) or int(my_tickets_amount) > max(
-            TICKETS
-        ):
-            print(
-                f"Ungültige Anzahl. Bitte eine Zahl zwischen 1 und {max(TICKETS)} eingeben."
-            )
-        else:
-            my_tickets_amount = int(my_tickets_amount)
+        if my_tickets_amount:
             break
     my_tickets = sample(TICKETS, my_tickets_amount)
     won = calculate_winnings(drawing(TICKETS), my_tickets)
@@ -60,3 +49,18 @@ def calculate_winnings(draws, my_tickets):
         if int(str(ticket)[-2:]) in draws[3]:
             won += WINNINGS["class_4"]
     return won
+
+
+def input_validation(my_tickets_amount):
+    if not my_tickets_amount.isdigit():
+        print(
+            f"Ungültige Eingabe. Bitte eine Zahl zwischen 1 und {max(TICKETS)} eingeben."
+        )
+        return False
+    elif min(TICKETS) > int(my_tickets_amount) or int(my_tickets_amount) > max(TICKETS):
+        print(
+            f"Ungültige Anzahl. Bitte eine Zahl zwischen 1 und {max(TICKETS)} eingeben."
+        )
+        return False
+    else:
+        return int(my_tickets_amount)
